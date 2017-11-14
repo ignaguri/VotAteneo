@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pulpfragio</title>
+    <script src="vue.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body>
+<div id="app">
+    <div class="row">
+        <div class="text-center">
+            <h1><img src="logo.png" class="img-circle" style="height: 70px; width: 70px;margin-right:10px;">Pulpfragio App</h1>
+        </div>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="text-center">
+            <div class="form-group">
+                <label for="txt_nombre">Nombre:</label>
+                <input type="text" id="txt_nombre" v-model="input.nombre" placeholder="Nombre del elegible" @keyup.enter="agregar">
+                <button type="button" class="btn btn-default" @click="agregar">Agregar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2" v-for="e in elegibles">
+            <h3><p class="text-center">{{e}}<button type="button" class="close" aria-label="Close" @click="eliminar(e)"><span aria-hidden="true">&times;</span></button></p></h3>
+            <button type="button" class="btn btn-success btn-block" @click="presi1(e)">Presi 1</button>
+            <button type="button" class="btn btn-info btn-block" @click="presi2(e)">Presi 2</button>
+            <button type="button" class="btn btn-warning btn-block" @click="comando(e)">Comando</button>
+        </div>
+        <hr>
+    </div>
+    <div class="row">
+        <hr>
+        <div class="col-md-12">
+            <div class="text-center">
+                <table class="table table-bordered">
+                    <thead>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Presi 1 (2p.)</th>
+                    <th class="text-center">Presi 2 (1p.)</th>
+                    <th class="text-center">Total Presi</th>
+                    <th class="text-center">Comando</th>
+                    <th class="text-center">Total votos</th>
+                    </thead>
+                    <tbody>
+                    <tr v-for="v,k in votos">
+                        <td><strong><em>{{k}}</em></strong></td>
+                        <td>{{v['presi1']}}</td>
+                        <td>{{v['presi2']}}</td>
+                        <td><strong>{{v['presi1'] * 2 + v['presi2']}}</strong></td>
+                        <td>{{v['comando']}}</td>
+                        <td><u>{{v['presi1'] + v['presi2'] + v['comando']}}</u></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            input: {
+                nombre: null
+            },
+            votos: {},
+            elegibles: []
+        },
+        methods: {
+            agregar: function (e) {
+                var pibe = this.input.nombre
+                this.elegibles.push(pibe)
+                this.input.nombre = null
+                var vot = {
+                    presi1: 0,
+                    presi2: 0,
+                    comando: 0
+                }
+                Vue.set(this.votos, pibe, vot)
+            },
+            presi1: function (e) {
+                this.votos[e]['presi1']++
+            },
+            presi2: function (e) {
+                this.votos[e]['presi2']++
+            },
+            comando: function (e) {
+                this.votos[e]['comando']++
+            },
+            eliminar: function (e) {
+                this.elegibles = this.elegibles.filter(function (ele) { return ele != e })
+                delete this.votos[e]
+            }
+        }
+    })
+</script>
+</body>
+</html>
